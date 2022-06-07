@@ -41,11 +41,7 @@ func main() {
 				)
 			} else if r.Host == "brave-node-maintenance.cosmos-softwares.com" {
 				if isUnderMaintenance {
-					return r, goproxy.NewResponse(r,
-						goproxy.ContentTypeText,
-						400,
-						"This node is under maintenance",
-					)
+					return r, nil
 				} else {
 					return r, goproxy.NewResponse(r,
 						goproxy.ContentTypeText,
