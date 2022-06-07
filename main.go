@@ -33,6 +33,7 @@ func main() {
 
 	proxy.OnRequest().DoFunc(
 		func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
+			log.Println(r.Host)
 			if r.Host == "brave-admin.cosmos-softwares.com" {
 				return r, goproxy.NewResponse(r,
 					goproxy.ContentTypeText,
@@ -53,7 +54,7 @@ func main() {
 						"This node is active",
 					)
 				}
-			} else if r.Host == "maintenance-pI0Hn26UkvVX.cosmos-softwares.com" {
+			} else if r.Host == "maintenance-pi0hn26ukvvx.cosmos-softwares.com" {
 				if isUnderMaintenance {
 					return r, goproxy.NewResponse(r,
 						goproxy.ContentTypeText,
@@ -68,7 +69,7 @@ func main() {
 						"This node is now under maintenance",
 					)
 				}
-			} else if r.Host == "maintenance-1KtcVMy70uXJ.cosmos-softwares.com" {
+			} else if r.Host == "maintenance-1ktcvmy70uxj.cosmos-softwares.com" {
 				if !isUnderMaintenance {
 					return r, goproxy.NewResponse(r,
 						goproxy.ContentTypeText,
