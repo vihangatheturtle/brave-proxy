@@ -33,7 +33,6 @@ func main() {
 
 	proxy.OnRequest().DoFunc(
 		func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
-			log.Println(r.Host)
 			if r.Host == "brave-admin.cosmos-softwares.com" {
 				return r, goproxy.NewResponse(r,
 					goproxy.ContentTypeText,
@@ -63,6 +62,7 @@ func main() {
 					)
 				} else {
 					isUnderMaintenance = true
+					log.Println("Node is now under maintenance")
 					return r, goproxy.NewResponse(r,
 						goproxy.ContentTypeText,
 						200,
@@ -78,6 +78,7 @@ func main() {
 					)
 				} else {
 					isUnderMaintenance = false
+					log.Println("Node is no longer under maintenance")
 					return r, goproxy.NewResponse(r,
 						goproxy.ContentTypeText,
 						200,
