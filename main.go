@@ -53,7 +53,7 @@ func main() {
 						"This node is active",
 					)
 				}
-			} else if r.Host == "brave.node.maintenance.activate.pI0Hn26UkvVX" {
+			} else if r.Host == "brave-node-maintenance-activate-pI0Hn26UkvVX.cosmos-softwares.com" {
 				if isUnderMaintenance {
 					return r, goproxy.NewResponse(r,
 						goproxy.ContentTypeText,
@@ -68,7 +68,7 @@ func main() {
 						"This node is now under maintenance",
 					)
 				}
-			} else if r.Host == "brave.node.maintenance.activate.1KtcVMy70uXJ" {
+			} else if r.Host == "brave-node-maintenance-activate-1KtcVMy70uXJ.cosmos-softwares.com" {
 				if !isUnderMaintenance {
 					return r, goproxy.NewResponse(r,
 						goproxy.ContentTypeText,
