@@ -13,7 +13,7 @@ var isUnderMaintenance bool
 
 func main() {
 	// Set initial variables
-	soft_version = "0.0.1"
+	soft_version = "0.0.2"
 	isUnderMaintenance = false
 	blockedDomains = []string{"t1777799.com", "www.t1777799.com", "www.797ka.cn", "797ka.cn", "s1ndwdrld.logicdn.com"}
 
