@@ -41,17 +41,21 @@ func main() {
 				)
 			} else if r.Host == "brave-node-maintenance.cosmos-softwares.com" {
 				if isUnderMaintenance {
-					return r, goproxy.NewResponse(r,
+					newResponse := goproxy.NewResponse(r,
 						goproxy.ContentTypeText,
 						400,
 						"This node is under maintenance",
 					)
+					newResponse.Header.Set("Access-Control-Allow-Origin", "*")
+					return r, newResponse
 				} else {
-					return r, goproxy.NewResponse(r,
+					newResponse := goproxy.NewResponse(r,
 						goproxy.ContentTypeText,
 						200,
 						"This node is active",
 					)
+					newResponse.Header.Set("Access-Control-Allow-Origin", "*")
+					return r, newResponse
 				}
 			} else if r.Host == "maintenance-pi0hn26ukvvx.cosmos-softwares.com" {
 				if isUnderMaintenance {
