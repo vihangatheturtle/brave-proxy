@@ -2,96 +2,19 @@ package main
 
 import (
 	"log"
-	"net/http"
 
-	"github.com/elazarl/goproxy"
+	socks5 "github.com/armon/go-socks5"
 )
 
-var soft_version string
-var blockedDomains []string
-var isUnderMaintenance bool
-
 func main() {
-	// Set initial variables
-	soft_version = "0.0.2"
-	isUnderMaintenance = false
-	blockedDomains = []string{"t1777799.com", "www.t1777799.com", "www.797ka.cn", "797ka.cn", "s1ndwdrld.logicdn.com"}
-
-	log.Println("Starting brave proxy server on port 443")
-	proxy := goproxy.NewProxyHttpServer()
-	proxy.Verbose = false
-
-	for _, domain := range blockedDomains {
-		proxy.OnRequest(goproxy.ReqHostIs(domain)).HandleConnect(goproxy.AlwaysReject)
-		proxy.OnRequest(goproxy.ReqHostIs(domain)).DoFunc(
-			func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
-				return r, goproxy.NewResponse(r,
-					goproxy.ContentTypeText, http.StatusForbidden,
-					"This domain is blocked")
-			})
+	conf := &socks5.Config{}
+	server, err := socks5.New(conf)
+	if err != nil {
+		panic(err)
 	}
 
-	proxy.OnRequest().DoFunc(
-		func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
-			if r.Host == "brave-admin.cosmos-softwares.com" {
-				return r, goproxy.NewResponse(r,
-					goproxy.ContentTypeText,
-					200,
-					"Connected to Brave Proxy by Cosmos Softwares running on version "+soft_version,
-				)
-			} else if r.Host == "brave-node-maintenance.cosmos-softwares.com" {
-				if isUnderMaintenance {
-					newResponse := goproxy.NewResponse(r,
-						goproxy.ContentTypeText,
-						400,
-						"This node is under maintenance",
-					)
-					newResponse.Header.Set("Access-Control-Allow-Origin", "*")
-					return r, newResponse
-				} else {
-					newResponse := goproxy.NewResponse(r,
-						goproxy.ContentTypeText,
-						200,
-						"This node is active",
-					)
-					newResponse.Header.Set("Access-Control-Allow-Origin", "*")
-					return r, newResponse
-				}
-			} else if r.Host == "maintenance-pi0hn26ukvvx.cosmos-softwares.com" {
-				if isUnderMaintenance {
-					return r, goproxy.NewResponse(r,
-						goproxy.ContentTypeText,
-						400,
-						"This node is already under maintenance",
-					)
-				} else {
-					isUnderMaintenance = true
-					log.Println("Node is now under maintenance")
-					return r, goproxy.NewResponse(r,
-						goproxy.ContentTypeText,
-						200,
-						"This node is now under maintenance",
-					)
-				}
-			} else if r.Host == "maintenance-1ktcvmy70uxj.cosmos-softwares.com" {
-				if !isUnderMaintenance {
-					return r, goproxy.NewResponse(r,
-						goproxy.ContentTypeText,
-						400,
-						"This node is not under maintenance",
-					)
-				} else {
-					isUnderMaintenance = false
-					log.Println("Node is no longer under maintenance")
-					return r, goproxy.NewResponse(r,
-						goproxy.ContentTypeText,
-						200,
-						"This node is no longer under maintenance",
-					)
-				}
-			}
-			return r, nil
-		})
-
-	log.Fatal(http.ListenAndServe("0.0.0.0:443", proxy))
+	log.Println("Starting proxy server on port 443")
+	if err := server.ListenAndServe("tcp", "0.0.0.0:443"); err != nil {
+		panic(err)
+	}
 }
